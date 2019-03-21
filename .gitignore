@@ -62,6 +62,3 @@ typings/
 
 # IDE
 .vscode
-
-# tslint
-.tslint
