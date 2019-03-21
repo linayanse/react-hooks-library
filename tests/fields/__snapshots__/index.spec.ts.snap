@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Model Value should create instance 1`] = `"{\\"value\\":1,\\"field\\":{\\"displayName\\":\\"测试\\"}}"`;
