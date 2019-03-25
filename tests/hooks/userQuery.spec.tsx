@@ -6,6 +6,17 @@ import { useQuery } from '../../src/hooks'
 jest.useFakeTimers()
 
 describe('Component Query', () => {
+  it('should have initialData', () => {
+    const params = {
+      initialData: [],
+      skip: true,
+    }
+
+    const { result } = renderHook(() => useQuery(params))
+
+    chaiExpect(result.current.data).to.be.eql([])
+  })
+
   it('should fetch data even if variable is empty', () => {
     const fetch = Sinon.spy()
     const params = {

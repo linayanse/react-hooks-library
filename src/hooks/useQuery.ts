@@ -4,16 +4,17 @@ import { isEqual } from 'lodash'
 import { usePrevious } from './usePrevious'
 import { decorateModel } from '../fields'
 
-export interface IQueryProps {
+export interface IQueryProps<P> {
+  initialData?: P
   variable?: object
   pollInterval?: number
   skip?: boolean
-  query?(params?: object): Promise<any>
+  query?(params?: object): Promise<P>
 }
 
-export function useQuery(props: IQueryProps) {
-  const [data, setData] = useState(undefined)
-  const [error, setError] = useState(undefined)
+export function useQuery<P>(props: IQueryProps<P>) {
+  const [data, setData] = useState<P | undefined>(props.initialData)
+  const [error, setError] = useState<any>(undefined)
   const [loading, setLoading] = useState(false)
   const [intervalIndex, setIntervalIndex] = useState<number | undefined>(
     undefined
@@ -38,16 +39,14 @@ export function useQuery(props: IQueryProps) {
     if (!skip && props.query) {
       setLoading(true)
 
-      const query = props.query(props.variable)
+      const response = await props.query(props.variable)
 
       try {
-        const response = await query
-
         if (response) {
-          if (response.defintions) {
+          if (response['defintions']) {
             setData({
               ...response,
-              data: decorateModel(response.data, response.defintions),
+              data: decorateModel(response['data'], response['defintions']),
             })
           } else {
             setData(response)
@@ -63,8 +62,12 @@ export function useQuery(props: IQueryProps) {
         return response
       } catch (error) {
         setError(error)
+
+        return response
       }
     }
+
+    return undefined
   }
   const refetch = () => queryTransaction(false)
   const startPolling = (interval: number) => {

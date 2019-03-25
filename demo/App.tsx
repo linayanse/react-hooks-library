@@ -7,9 +7,12 @@ import './index.scss'
 
 const Demo: React.FunctionComponent = () => {
   const query = useQuery({
+    initialData: {
+      a: '1',
+    },
     query: () =>
-      fetch('https://jsonplaceholder.typicode.com/todos/1').then(response =>
-        response.json()
+      fetch('https://jsonplaceholder.typicode.com/todos/1').then<object>(
+        response => response.json()
       ),
   })
 
