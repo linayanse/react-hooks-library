@@ -19,13 +19,11 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const [intervalIndex, setIntervalIndex] = useState<number | undefined>(
     undefined
   )
+  const [isCalled, setIsCalled] = useState(false)
   const prevVariable = usePrevious(props.variable)
 
   const isVariableChange = () => {
-    if (
-      props.variable === undefined ||
-      !isEqual(prevVariable, props.variable)
-    ) {
+    if (!isCalled || !isEqual(prevVariable, props.variable)) {
       return true
     }
 
@@ -38,6 +36,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const queryTransaction = async (skip: boolean) => {
     if (!skip && props.query) {
       setLoading(true)
+      setIsCalled(true)
 
       const response = await props.query(props.variable)
 
