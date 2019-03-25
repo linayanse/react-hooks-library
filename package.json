@@ -8,6 +8,7 @@
     "lint": "tslint -p .",
     "dev": "webpack-dev-server --config=webpack.config.dev.js --hot --inline"
   },
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.2.2",
