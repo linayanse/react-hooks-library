@@ -9,9 +9,9 @@ module.exports = merge(
     entry: './src/index.ts',
     devtool: 'source-map',
     output: {
-      filename: 'react-hooks-uitls.js',
+      filename: 'react-hooks-library.js',
       path: path.resolve(__dirname, 'dist'),
-      library: 'react-hooks-uitls',
+      library: 'react-hooks-library',
       libraryTarget: 'umd',
     },
     externals : {

@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "build": "webpack -p --config=webpack.config.prod.js",
+    "build": "tsc --p tsconfig.types.json",
     "test": "jest --env=jsdom",
     "lint": "tslint -p .",
     "dev": "webpack-dev-server --config=webpack.config.dev.js --hot --inline"
   },
-  "typings": "index.d.ts",
+  "module": "dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.3.0",
