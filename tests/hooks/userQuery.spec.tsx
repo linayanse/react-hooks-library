@@ -14,7 +14,7 @@ describe('Component Query', () => {
 
     const { result } = renderHook(() => useQuery(params))
 
-    chaiExpect(result.current.data).to.be.eql([])
+    expect(result.current.data).toEqual([])
   })
 
   it('should fetch data even if variable is empty', () => {
@@ -28,7 +28,7 @@ describe('Component Query', () => {
       useQuery(params)
     })
 
-    chaiExpect(fetch.calledOnce).to.be.true
+    expect(fetch.calledOnce).toBeTruthy()
   })
 
   it('should not fetch data when skip is true', () => {
@@ -41,14 +41,14 @@ describe('Component Query', () => {
       useQuery(params)
     })
 
-    chaiExpect(fetch.calledOnce).to.be.false
+    expect(fetch.calledOnce).toBeFalsy()
 
     params.skip = false
     act(() => {
       rerender()
     })
 
-    chaiExpect(fetch.calledOnce).to.be.true
+    expect(fetch.calledOnce).toBeTruthy()
   })
 
   it('should fetch data when variable change', () => {
@@ -61,14 +61,31 @@ describe('Component Query', () => {
       })
     })
 
-    chaiExpect(fetch.calledOnce).to.be.true
+    expect(fetch.calledOnce).toBeTruthy()
 
     act(() => {
       variable = { data: 1 }
       rerender()
     })
 
-    chaiExpect(fetch.calledTwice).to.be.true
+    expect(fetch.calledTwice).toBeTruthy()
+  })
+
+  it('should`t fetch data when variable not change', () => {
+    const fetch = Sinon.spy()
+    const { rerender } = renderHook(() => {
+      useQuery({
+        query: fetch,
+      })
+    })
+
+    expect(fetch.calledOnce).toBeTruthy()
+
+    rerender({
+      query: fetch,
+    })
+
+    expect(fetch.calledOnce).toBeTruthy()
   })
 
   it('should change loading state when fetch', callback => {
@@ -82,10 +99,10 @@ describe('Component Query', () => {
       return useQuery(params)
     })
 
-    chaiExpect(result.current.loading).to.be.true
+    expect(result.current.loading).toBeTruthy()
 
     process.nextTick(() => {
-      chaiExpect(result.current.loading).to.be.false
+      expect(result.current.loading).toBeFalsy()
       callback()
     })
   })
@@ -101,10 +118,10 @@ describe('Component Query', () => {
       return useQuery(params)
     })
 
-    chaiExpect(result.current.data).to.be.undefined
+    expect(result.current.data).toBeUndefined()
 
     process.nextTick(() => {
-      chaiExpect(result.current.data).to.be.equal(42)
+      expect(result.current.data).toBe(42)
 
       callback()
     })
@@ -124,13 +141,13 @@ describe('Component Query', () => {
       return useQuery(params)
     })
 
-    chaiExpect(result.current.data).to.be.undefined
+    expect(result.current.data).toBeUndefined()
 
     process.nextTick(() => {
-      chaiExpect(result.current.data).to.be.equal(42)
+      expect(result.current.data).toBe(42)
 
       result.current.refetch().then(() => {
-        chaiExpect(result.current.data).to.be.equal(2)
+        expect(result.current.data).toBe(2)
 
         callback()
       })
@@ -147,14 +164,14 @@ describe('Component Query', () => {
       return useQuery(params)
     })
 
-    chaiExpect(fetch.callCount).to.be.equal(1)
+    expect(fetch.callCount).toBe(1)
 
     result.current.startPolling(1000)
     jest.advanceTimersByTime(1000)
-    chaiExpect(fetch.callCount).to.be.equal(2)
+    expect(fetch.callCount).toBe(2)
 
     result.current.stopPolling()
     jest.advanceTimersByTime(1000)
-    chaiExpect(fetch.callCount).to.be.equal(2)
+    expect(fetch.callCount).toBe(2)
   })
 })

@@ -10,12 +10,12 @@ describe('Model Presentation', () => {
   })
 
   it('should have valueDisplayName', () => {
-    chaiExpect(presentation.valueDisplayName).to.be.equal('test')
+    expect(presentation.valueDisplayName).toBe('test')
 
     presentation.valueMapper = {
       test: '测试',
     }
 
-    chaiExpect(presentation.valueDisplayName).to.be.equal('测试')
+    expect(presentation.valueDisplayName).toBe('测试')
   })
 })

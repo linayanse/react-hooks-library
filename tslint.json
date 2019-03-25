@@ -204,7 +204,7 @@
     ],
     "no-import-side-effect": false,
     "no-inferrable-types": true,
-    "no-inferred-empty-object-type": true,
+    "no-inferred-empty-object-type": false,
     "no-internal-module": true,
     "no-invalid-template-strings": true,
     "no-invalid-this": true,

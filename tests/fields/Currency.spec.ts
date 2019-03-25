@@ -14,15 +14,15 @@ describe('Model Currency', () => {
   })
 
   it('should have yuan', () => {
-    chaiExpect(currency.yuan).to.be.equal(1)
+    expect(currency.yuan).toBe(1)
   })
 
   it('should have format function', () => {
-    chaiExpect(currency.format()).to.be.equal('1.00')
+    expect(currency.format()).toBe('1.00')
 
     currency.value = 1000000
 
-    chaiExpect(currency.format()).to.be.equal('10,000.00')
-    chaiExpect(currency.format('0.0')).to.be.equal('10000.0')
+    expect(currency.format()).toBe('10,000.00')
+    expect(currency.format('0.0')).toBe('10000.0')
   })
 })

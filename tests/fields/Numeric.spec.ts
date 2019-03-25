@@ -14,15 +14,15 @@ describe('Model Numeric', () => {
   })
 
   it('should have defaultFormatString', () => {
-    chaiExpect(numeric['defaultFormatString']).to.be.equal('0,0.00')
+    expect(numeric['defaultFormatString']).toBe('0,0.00')
   })
 
   it('should have format function', () => {
-    chaiExpect(numeric.format()).to.be.equal('1.00')
+    expect(numeric.format()).toBe('1.00')
 
     numeric.value = 10000
 
-    chaiExpect(numeric.format()).to.be.equal('10,000.00')
-    chaiExpect(numeric.format('0.0')).to.be.equal('10000.0')
+    expect(numeric.format()).toBe('10,000.00')
+    expect(numeric.format('0.0')).toBe('10000.0')
   })
 })

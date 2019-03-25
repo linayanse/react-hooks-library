@@ -12,6 +12,6 @@ describe('Model Numeric', () => {
   })
 
   it('should have format function', () => {
-    chaiExpect(date.format()).to.be.equal('2012-11-11')
+    expect(date.format()).toBe('2012-11-11')
   })
 })
