@@ -42,13 +42,6 @@ describe('Component Query', () => {
     })
 
     expect(fetch.calledOnce).toBeFalsy()
-
-    params.skip = false
-    act(() => {
-      rerender()
-    })
-
-    expect(fetch.calledOnce).toBeTruthy()
   })
 
   it('should fetch data when variable change', () => {
