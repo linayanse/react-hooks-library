@@ -57,21 +57,12 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
       try {
         if (response) {
-          if (response['defintions']) {
-            setData({
-              ...response,
-              data: decorateModel(response['data'], response['defintions']),
-            })
-          } else {
-            setData(response)
-          }
-
-          setLoading(false)
+          setData(response)
         } else {
           reset()
-
-          setLoading(false)
         }
+
+        setLoading(false)
 
         return response
       } catch (error) {
