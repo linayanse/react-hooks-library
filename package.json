@@ -1,6 +1,6 @@
 {
   "name": "react-hooks-library",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "license": "MIT",
   "scripts": {
     "build": "tsc --p tsconfig.types.json",
