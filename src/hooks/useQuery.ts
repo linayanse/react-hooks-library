@@ -10,6 +10,8 @@ export interface IQueryProps<P> {
   skip?: boolean
   autoQuery?: boolean
   query?(params?: IQueryProps<P>['variable']): Promise<P>
+  onSuccess?(result: P): void
+  onFailure?(error: Error): void
 }
 
 export function useQuery<P>(props: IQueryProps<P>) {
@@ -52,9 +54,9 @@ export function useQuery<P>(props: IQueryProps<P>) {
     if (mergedProps.query) {
       setLoading(true)
 
-      const response = await mergedProps.query(variable)
-
       try {
+        const response = await mergedProps.query(variable)
+
         if (response) {
           setData(response)
         } else {
@@ -62,12 +64,15 @@ export function useQuery<P>(props: IQueryProps<P>) {
         }
 
         setLoading(false)
+        typeof props.onSuccess === 'function' && props.onSuccess(response)
 
         return response
       } catch (error) {
         setError(error)
 
-        return response
+        typeof props.onFailure === 'function' && props.onFailure(error)
+
+        return error
       }
     }
 
