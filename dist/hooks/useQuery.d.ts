@@ -3,11 +3,11 @@ export interface IQueryProps<P> {
     variable?: object;
     pollInterval?: number;
     skip?: boolean;
-    query?(params?: object): Promise<P>;
+    query?(params?: IQueryProps<P>['variable']): Promise<P>;
 }
 export declare function useQuery<P>(props: IQueryProps<P>): {
     data: P | undefined;
-    clear: () => void;
+    reset: () => void;
     loading: boolean;
     error: any;
     refetch: () => Promise<P | undefined>;

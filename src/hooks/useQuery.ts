@@ -9,11 +9,13 @@ export interface IQueryProps<P> {
   variable?: object
   pollInterval?: number
   skip?: boolean
-  query?(params?: object): Promise<P>
+  query?(params?: IQueryProps<P>['variable']): Promise<P>
 }
 
 export function useQuery<P>(props: IQueryProps<P>) {
-  const [data, setData] = useState<P | undefined>(props.initialData)
+  const [data, setData] = useState<IQueryProps<P>['initialData']>(
+    props.initialData
+  )
   const [error, setError] = useState<any>(undefined)
   const [loading, setLoading] = useState(false)
   const [intervalIndex, setIntervalIndex] = useState<number | undefined>(
@@ -29,16 +31,16 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
     return false
   }
-  const clear = () => {
-    setData(undefined)
+  const reset = () => {
+    setData(props.initialData)
   }
 
-  const queryTransaction = async (skip: boolean) => {
+  const queryTransaction = async (skip: boolean, variable = props.variable) => {
     if (!skip && props.query) {
       setLoading(true)
       setIsCalled(true)
 
-      const response = await props.query(props.variable)
+      const response = await props.query(variable)
 
       try {
         if (response) {
@@ -53,7 +55,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
           setLoading(false)
         } else {
-          clear()
+          reset()
 
           setLoading(false)
         }
@@ -88,7 +90,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
   return {
     data,
-    clear,
+    reset,
     loading,
     error,
     refetch,

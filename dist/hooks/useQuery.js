@@ -9,52 +9,56 @@ export function useQuery(props) {
     var _b = useState(undefined), error = _b[0], setError = _b[1];
     var _c = useState(false), loading = _c[0], setLoading = _c[1];
     var _d = useState(undefined), intervalIndex = _d[0], setIntervalIndex = _d[1];
+    var _e = useState(false), isCalled = _e[0], setIsCalled = _e[1];
     var prevVariable = usePrevious(props.variable);
     var isVariableChange = function () {
-        if (props.variable === undefined ||
-            !isEqual(prevVariable, props.variable)) {
+        if (!isCalled || !isEqual(prevVariable, props.variable)) {
             return true;
         }
         return false;
     };
-    var clear = function () {
-        setData(undefined);
+    var reset = function () {
+        setData(props.initialData);
     };
-    var queryTransaction = function (skip) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-        var response;
-        return tslib_1.__generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!(!skip && props.query)) return [3 /*break*/, 2];
-                    setLoading(true);
-                    return [4 /*yield*/, props.query(props.variable)];
-                case 1:
-                    response = _a.sent();
-                    try {
-                        if (response) {
-                            if (response['defintions']) {
-                                setData(tslib_1.__assign({}, response, { data: decorateModel(response['data'], response['defintions']) }));
+    var queryTransaction = function (skip, variable) {
+        if (variable === void 0) { variable = props.variable; }
+        return tslib_1.__awaiter(_this, void 0, void 0, function () {
+            var response;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(!skip && props.query)) return [3 /*break*/, 2];
+                        setLoading(true);
+                        setIsCalled(true);
+                        return [4 /*yield*/, props.query(variable)];
+                    case 1:
+                        response = _a.sent();
+                        try {
+                            if (response) {
+                                if (response['defintions']) {
+                                    setData(tslib_1.__assign({}, response, { data: decorateModel(response['data'], response['defintions']) }));
+                                }
+                                else {
+                                    setData(response);
+                                }
+                                setLoading(false);
                             }
                             else {
-                                setData(response);
+                                reset();
+                                setLoading(false);
                             }
-                            setLoading(false);
+                            return [2 /*return*/, response];
                         }
-                        else {
-                            clear();
-                            setLoading(false);
+                        catch (error) {
+                            setError(error);
+                            return [2 /*return*/, response];
                         }
-                        return [2 /*return*/, response];
-                    }
-                    catch (error) {
-                        setError(error);
-                        return [2 /*return*/, response];
-                    }
-                    _a.label = 2;
-                case 2: return [2 /*return*/, undefined];
-            }
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, undefined];
+                }
+            });
         });
-    }); };
+    };
     var refetch = function () { return queryTransaction(false); };
     var startPolling = function (interval) {
         setIntervalIndex(window.setInterval(queryTransaction, interval));
@@ -73,7 +77,7 @@ export function useQuery(props) {
     }, [props.skip, props.variable]);
     return {
         data: data,
-        clear: clear,
+        reset: reset,
         loading: loading,
         error: error,
         refetch: refetch,
