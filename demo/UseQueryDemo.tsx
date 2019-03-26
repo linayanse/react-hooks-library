@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { hot } from 'react-hot-loader'
 
-import { useQuery } from '../dist'
+import { useQuery } from '../src'
 
 import './index.scss'
 
