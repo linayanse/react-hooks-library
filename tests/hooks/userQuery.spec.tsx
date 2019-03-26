@@ -37,7 +37,8 @@ describe('Component Query', () => {
       query: fetch,
       skip: true,
     }
-    const { rerender } = renderHook(() => {
+
+    renderHook(() => {
       useQuery(params)
     })
 
