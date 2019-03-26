@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { isEqual } from 'lodash'
+import { isEqual, merge } from 'lodash'
 
 import { usePrevious } from './usePrevious'
 import { decorateModel } from '../fields'
@@ -9,12 +9,19 @@ export interface IQueryProps<P> {
   variable?: object
   pollInterval?: number
   skip?: boolean
+  autoQuery?: boolean
   query?(params?: IQueryProps<P>['variable']): Promise<P>
 }
 
 export function useQuery<P>(props: IQueryProps<P>) {
+  const defaultProps = {
+    skip: false,
+    autoQuery: true,
+  }
+  const mergedProps = merge(defaultProps, props)
+
   const [data, setData] = useState<IQueryProps<P>['initialData']>(
-    props.initialData
+    mergedProps.initialData
   )
   const [error, setError] = useState<any>(undefined)
   const [loading, setLoading] = useState(false)
@@ -22,25 +29,32 @@ export function useQuery<P>(props: IQueryProps<P>) {
     undefined
   )
   const [isCalled, setIsCalled] = useState(false)
-  const prevVariable = usePrevious(props.variable)
+  const prevVariable = usePrevious(mergedProps.variable)
 
-  const isVariableChange = () => {
-    if (!isCalled || !isEqual(prevVariable, props.variable)) {
-      return true
+  const isShouldQuery = () => {
+    // the first time
+    if (!isCalled) {
+      if (!mergedProps.skip) {
+        return true
+      }
+    } else if (mergedProps.autoQuery) {
+      if (!isEqual(prevVariable, mergedProps.variable)) {
+        return true
+      }
     }
 
     return false
   }
   const reset = () => {
-    setData(props.initialData)
+    setData(mergedProps.initialData)
   }
 
-  const queryTransaction = async (skip: boolean, variable = props.variable) => {
-    if (!skip && props.query) {
+  const queryTransaction = async (variable = mergedProps.variable) => {
+    if (mergedProps.query) {
       setLoading(true)
       setIsCalled(true)
 
-      const response = await props.query(variable)
+      const response = await mergedProps.query(variable)
 
       try {
         if (response) {
@@ -70,7 +84,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
     return undefined
   }
-  const refetch = () => queryTransaction(false)
+  const refetch = queryTransaction
   const startPolling = (interval: number) => {
     setIntervalIndex(window.setInterval(queryTransaction, interval))
   }
@@ -83,10 +97,10 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
   // fetch data
   useEffect(() => {
-    if (isVariableChange()) {
-      queryTransaction(props.skip || false)
+    if (isShouldQuery()) {
+      queryTransaction()
     }
-  }, [props.skip, props.variable])
+  }, [mergedProps.variable])
 
   return {
     data,

@@ -3,6 +3,7 @@ export interface IQueryProps<P> {
     variable?: object;
     pollInterval?: number;
     skip?: boolean;
+    autoQuery?: boolean;
     query?(params?: IQueryProps<P>['variable']): Promise<P>;
 }
 export declare function useQuery<P>(props: IQueryProps<P>): {
@@ -10,7 +11,7 @@ export declare function useQuery<P>(props: IQueryProps<P>): {
     reset: () => void;
     loading: boolean;
     error: any;
-    refetch: () => Promise<P | undefined>;
+    refetch: (variable?: object | undefined) => Promise<P | undefined>;
     startPolling: (interval: number) => void;
     stopPolling: () => void;
 };
