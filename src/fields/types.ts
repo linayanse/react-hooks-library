@@ -1,17 +1,12 @@
 export enum FieldKind {
   // 展示
-  Presentation = 1,
+  Text = 1,
   // 日期
   Date = 2,
   // 数值
   Numeric = 10,
   // 货币
   Currency = 11,
-}
-
-export enum ChartType {
-  LINE,
-  BAR,
 }
 
 export interface IField {
@@ -25,18 +20,16 @@ export interface INumericField extends IField {
   kind: FieldKind.Numeric
   decimals: number
   isPercent?: boolean
-  chartType?: ChartType
 }
 
 export interface ICurrencyField extends IField {
   kind: FieldKind.Currency
   decimals: number
   isPercent?: boolean
-  chartType?: ChartType
 }
 
 export interface IPresentationField extends IField {
-  kind: FieldKind.Presentation
+  kind: FieldKind.Text
   valueMapper?: { [key: string]: string }
 }
 

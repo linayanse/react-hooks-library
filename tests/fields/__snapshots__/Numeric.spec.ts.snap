@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Model Numeric should create instance 1`] = `"{\\"numeral\\":{\\"_input\\":1,\\"_value\\":1},\\"field\\":{\\"displayName\\":\\"测试\\"},\\"decimals\\":2,\\"chartType\\":1,\\"isPercent\\":false}"`;
+exports[`Model Numeric should create instance 1`] = `"{\\"numeral\\":{\\"_input\\":1,\\"_value\\":1},\\"field\\":{\\"displayName\\":\\"测试\\"},\\"decimals\\":2,\\"isPercent\\":false}"`;

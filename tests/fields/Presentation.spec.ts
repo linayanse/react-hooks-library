@@ -1,21 +1,21 @@
-import { Presentation } from '../../src/fields'
+import { Text } from '../../src/fields'
 
 describe('Model Presentation', () => {
-  const presentation = new Presentation('test', {
+  const text = new Text('test', {
     displayName: '测试',
   })
 
   it('should create instance', () => {
-    expect(JSON.stringify(presentation)).toMatchSnapshot()
+    expect(JSON.stringify(text)).toMatchSnapshot()
   })
 
   it('should have valueDisplayName', () => {
-    expect(presentation.valueDisplayName).toBe('test')
+    expect(text.valueDisplayName).toBe('test')
 
-    presentation.valueMapper = {
+    text.valueMapper = {
       test: '测试',
     }
 
-    expect(presentation.valueDisplayName).toBe('测试')
+    expect(text.valueDisplayName).toBe('测试')
   })
 })

@@ -1,10 +1,8 @@
 import { Currency } from '../../src/fields'
-import { ChartType } from '../../src/fields/types'
 
 describe('Model Currency', () => {
   const currency = new Currency(100, {
     decimals: 2,
-    chartType: ChartType.BAR,
     isPercent: false,
     displayName: '测试',
   })

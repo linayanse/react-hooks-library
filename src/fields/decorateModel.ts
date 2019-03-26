@@ -10,7 +10,7 @@ import {
 import { Date } from './Date'
 import { Currency } from './Currency'
 import { Numeric } from './Numeric'
-import { Presentation } from './Presentation'
+import { Text } from './Text'
 
 export interface IDefintion {
   [key: string]:
@@ -55,19 +55,17 @@ function createModel(value: any, defintion: IDefintion[keyof IDefintion]): any {
     case FieldKind.Currency:
       return new Currency(value, {
         displayName: defintion.displayName,
-        chartType: defintion.chartType,
         decimals: defintion.decimals,
         isPercent: defintion.isPercent,
       })
     case FieldKind.Numeric:
       return new Numeric(value, {
         displayName: defintion.displayName,
-        chartType: defintion.chartType,
         decimals: defintion.decimals,
         isPercent: defintion.isPercent,
       })
-    case FieldKind.Presentation:
-      return new Presentation(value, {
+    case FieldKind.Text:
+      return new Text(value, {
         displayName: defintion.displayName,
         valueMapper: defintion.valueMapper,
       })

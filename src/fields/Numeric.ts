@@ -1,21 +1,12 @@
 import numeral from 'numeral'
 
-import { INumericField, ChartType, IFieldExcludeKind } from './types'
+import { INumericField, IFieldExcludeKind } from './types'
 import { Value } from './Value'
 
 export class Numeric extends Value<number> {
   public numeral: Numeral
   public decimals: number
-  public chartType?: ChartType
   public isPercent?: boolean
-
-  public get value(): number {
-    return this.numeral.value()
-  }
-
-  public set value(newValue: number) {
-    this.numeral = numeral(newValue)
-  }
 
   protected get defaultFormatString(): string {
     if (this.decimals > 0) {
@@ -25,13 +16,35 @@ export class Numeric extends Value<number> {
     return '0,0'
   }
 
+  public get presentation() {
+    return this.format()
+  }
+
+  public get value(): number {
+    return this.numeral.value()
+  }
+
+  public set value(newValue: number) {
+    this.numeral = numeral(newValue)
+  }
+
   constructor(value: number, numericField: IFieldExcludeKind<INumericField>) {
     super(value, numericField)
 
     this.numeral = numeral(value)
     this.decimals = numericField.decimals
-    this.chartType = numericField.chartType
     this.isPercent = numericField.isPercent
+  }
+
+  public calcTrend = (compare: number) => {
+    if (!compare || compare === 0) {
+      return undefined
+    }
+
+    return numeral(this.value)
+      .subtract(compare)
+      .divide(compare)
+      .value()
   }
 
   public format = (formatString?: string) => {

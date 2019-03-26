@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { isEqual, merge } from 'lodash'
 
 import { usePrevious } from './usePrevious'
-import { decorateModel } from '../fields'
 
 export interface IQueryProps<P> {
   initialData?: P
