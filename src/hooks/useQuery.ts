@@ -52,7 +52,6 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const queryTransaction = async (variable = mergedProps.variable) => {
     if (mergedProps.query) {
       setLoading(true)
-      setIsCalled(true)
 
       const response = await mergedProps.query(variable)
 
@@ -100,7 +99,9 @@ export function useQuery<P>(props: IQueryProps<P>) {
     if (isShouldQuery()) {
       queryTransaction()
     }
-  }, [mergedProps.variable])
+
+    setIsCalled(true)
+  }, [props.variable])
 
   return {
     data,
