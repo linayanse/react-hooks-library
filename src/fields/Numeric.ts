@@ -36,8 +36,8 @@ export class Numeric extends Value<number> {
     this.isPercent = numericField.isPercent
   }
 
-  public calcTrend = (compare: number) => {
-    if (!compare || compare === 0) {
+  public calcTrend = (compare?: number) => {
+    if (compare == undefined || compare === 0 || Number.isNaN(compare)) {
       return undefined
     }
 
@@ -49,5 +49,13 @@ export class Numeric extends Value<number> {
 
   public format = (formatString?: string) => {
     return this.numeral.format(formatString || this.defaultFormatString)
+  }
+
+  public clone = (value?: number) => {
+    return new Numeric(value || this.value, {
+      decimals: this.decimals,
+      displayName: this.field.displayName,
+      isPercent: this.isPercent,
+    })
   }
 }

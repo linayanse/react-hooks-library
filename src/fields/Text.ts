@@ -2,7 +2,7 @@ import { IFieldExcludeKind, IPresentationField } from './types'
 import { Value } from './Value'
 
 export class Text extends Value<string> {
-  public valueMapper?: object
+  public valueMapper?: IPresentationField['valueMapper']
 
   public get presentation() {
     return this.valueDisplayName
@@ -23,5 +23,12 @@ export class Text extends Value<string> {
     super(value, presentationField)
 
     this.valueMapper = presentationField.valueMapper
+  }
+
+  public clone = (value?: string) => {
+    return new Text(value || this.value, {
+      displayName: this.field.displayName,
+      valueMapper: this.valueMapper,
+    })
   }
 }

@@ -19,4 +19,10 @@ export class Date extends Value<string> {
   public format = (formatString = 'YYYY-MM-DD') => {
     return this.moment.format(formatString)
   }
+
+  public clone = (value?: string) => {
+    return new Date(value || this.value, {
+      displayName: this.field.displayName,
+    })
+  }
 }

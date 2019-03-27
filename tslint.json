@@ -313,14 +313,14 @@
       0
     ],
     "strict-boolean-expressions": false,
-    "strict-type-predicates": true,
+    "strict-type-predicates": false,
     "switch-default": true,
     "switch-final-break": true,
     "trailing-comma": [
       true,
       "never"
     ],
-    "triple-equals": true,
+    "triple-equals": false,
     "type-literal-delimiter": false,
     "typedef": [
       true,

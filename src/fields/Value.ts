@@ -11,4 +11,6 @@ export abstract class Value<P> {
     this.value = value
     this.field = new Field(field)
   }
+
+  public abstract clone(value: P): Value<P>
 }
