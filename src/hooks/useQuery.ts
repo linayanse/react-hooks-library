@@ -72,15 +72,22 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
         typeof props.onFailure === 'function' && props.onFailure(error)
 
-        return error
+        throw error
       }
     }
 
     return undefined
   }
   const refetch = queryTransaction
-  const startPolling = (interval: number) => {
-    setIntervalIndex(window.setInterval(queryTransaction, interval))
+  const startPolling = (
+    interval: number,
+    variable?: IQueryProps<P>['variable']
+  ) => {
+    setIntervalIndex(
+      window.setInterval(() => {
+        queryTransaction(variable)
+      }, interval)
+    )
   }
   const stopPolling = () => {
     if (intervalIndex !== undefined) {
