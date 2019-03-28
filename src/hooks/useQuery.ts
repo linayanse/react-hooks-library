@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { isEqual, merge } from 'lodash'
 
 import { usePrevious } from './usePrevious'
+import { useCancellablePromise } from './useCancellablePromise'
 
 export interface IQueryProps<P> {
   initialData?: P
@@ -24,6 +25,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const [data, setData] = useState<IQueryProps<P>['initialData']>(
     mergedProps.initialData
   )
+  const { cancellablePromise } = useCancellablePromise()
   const [error, setError] = useState<any>(undefined)
   const [loading, setLoading] = useState(false)
   const [intervalIndex, setIntervalIndex] = useState<number | undefined>(
@@ -55,7 +57,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
       setLoading(true)
 
       try {
-        const response = await mergedProps.query(variable)
+        const response = await cancellablePromise(mergedProps.query(variable))
 
         if (response) {
           setData(response)
