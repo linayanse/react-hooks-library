@@ -29,7 +29,7 @@ export class Numeric extends Value<number> {
   }
 
   public get fuzzyValue(): number {
-    return numeral.unformat(this.presentation)
+    return numeral(this.presentation).value()
   }
 
   public get kind() {
