@@ -8,6 +8,10 @@ export class Text extends Value<string> {
     return this.valueDisplayName
   }
 
+  public get kind() {
+    return Text
+  }
+
   public get valueDisplayName(): string {
     if (this.valueMapper !== undefined) {
       return this.valueMapper[this.value]

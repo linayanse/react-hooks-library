@@ -13,6 +13,14 @@ export class Currency extends Numeric {
       .value()
   }
 
+  public get kind() {
+    return Currency
+  }
+
+  public static isCurrency<P>(model: P) {
+    return model instanceof Currency
+  }
+
   public format = (formatString?: string) => {
     return numeral(this.yuan).format(formatString || this.defaultFormatString)
   }

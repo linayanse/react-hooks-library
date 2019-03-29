@@ -28,6 +28,14 @@ export class Numeric extends Value<number> {
     this.numeral = numeral(newValue)
   }
 
+  public get fuzzyValue(): number {
+    return numeral.unformat(this.presentation)
+  }
+
+  public get kind() {
+    return Numeric
+  }
+
   constructor(value: number, numericField: IFieldExcludeKind<INumericField>) {
     super(value, numericField)
 

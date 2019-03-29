@@ -6,6 +6,7 @@ export abstract class Value<P> {
   public field: Field
 
   public abstract get presentation(): string
+  public abstract get kind(): any
 
   constructor(value: P, field: IFieldExcludeKind<IField>) {
     this.value = value

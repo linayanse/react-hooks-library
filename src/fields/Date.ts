@@ -10,6 +10,10 @@ export class Date extends Value<string> {
     return this.format()
   }
 
+  public get kind() {
+    return Date
+  }
+
   constructor(value: string, field: IFieldExcludeKind<IDateField>) {
     super(value, field)
 
