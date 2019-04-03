@@ -73,8 +73,6 @@ export function useQuery<P>(props: IQueryProps<P>) {
         setError(error)
 
         typeof props.onFailure === 'function' && props.onFailure(error)
-
-        throw error
       }
     }
 

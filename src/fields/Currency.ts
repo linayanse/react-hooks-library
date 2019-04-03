@@ -13,10 +13,6 @@ export class Currency extends Numeric {
       .value()
   }
 
-  public get fuzzyYuan(): number {
-    return numeral(this.presentation).value()
-  }
-
   public get kind() {
     return Currency
   }
