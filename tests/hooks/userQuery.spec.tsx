@@ -6,7 +6,7 @@ import { useQuery } from '../../src/hooks'
 jest.useFakeTimers()
 
 describe('Component Query', () => {
-  it('should have initialData', () => {
+  it.only('should have initialData', () => {
     const params = {
       initialData: [],
       skip: true,
