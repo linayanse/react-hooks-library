@@ -193,7 +193,7 @@
     "no-duplicate-switch-case": true,
     "no-duplicate-variable": true,
     "no-dynamic-delete": true,
-    "no-empty": true,
+    "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
     "no-floating-promises": false,
@@ -366,6 +366,6 @@
       "check-typecast",
       "check-type-operator",
       "check-preblock"
-    ]
+    ],
   }
 }
