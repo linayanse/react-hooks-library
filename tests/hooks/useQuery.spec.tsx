@@ -6,7 +6,7 @@ import { useQuery } from '../../src/hooks'
 jest.useFakeTimers()
 
 describe('Component Query', () => {
-  it.only('should have initialData', () => {
+  it('should have initialData', () => {
     const params = {
       initialData: [],
       skip: true,
@@ -24,8 +24,8 @@ describe('Component Query', () => {
       skip: false,
     }
 
-    renderHook(() => {
-      useQuery(params)
+    act(() => {
+      renderHook(() => useQuery(params))
     })
 
     expect(fetch.calledOnce).toBeTruthy()
