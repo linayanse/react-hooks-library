@@ -10,18 +10,12 @@ export function useInterval(callback: () => void, delay: number) {
 
   // 建立 interval
   useEffect(() => {
-    function tick() {
+    const index = setInterval(() => {
       savedCallback.current && savedCallback.current()
+    }, delay)
+
+    return () => {
+      clearInterval(index)
     }
-
-    if (delay !== null) {
-      const index = setInterval(tick, delay)
-
-      return () => {
-        clearInterval(index)
-      }
-    }
-
-    return () => {}
   }, [delay])
 }
