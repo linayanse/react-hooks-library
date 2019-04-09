@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Model Field should create instance 1`] = `"{\\"displayName\\":\\"测试\\"}"`;

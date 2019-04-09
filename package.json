@@ -3,7 +3,6 @@
   "version": "0.0.25",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --p tsconfig.types.json",
     "test": "jest --env=jsdom",
     "lint": "tslint -p .",
     "dev": "webpack-dev-server --config=webpack.config.dev.js --hot --inline"
@@ -13,7 +12,8 @@
   "files": [
     "dist/",
     "demo/",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -25,19 +25,16 @@
     "@babel/preset-typescript": "^7.1.0",
     "@hot-loader/react-dom": "^16.8.1",
     "@types/bluebird": "^3.5.25",
-    "@types/chai": "^4.1.7",
     "@types/enzyme": "^3.1.17",
     "@types/humps": "^1.1.2",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.123",
-    "@types/numeral": "^0.0.25",
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.1",
     "@types/sinon": "^7.0.10",
     "@types/webpack": "^4.4.26",
     "babel-jest": "^24.5.0",
     "babel-loader": "^8.0.5",
-    "chai": "^4.2.0",
     "core-js": "3",
     "css-loader": "^2.1.1",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
@@ -71,7 +68,6 @@
   "peerDependencies": {
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "numeral": "^2.0.6",
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
   },
@@ -85,7 +81,6 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "moment": "^2.24.0",
-    "numeral": "^2.0.6"
+    "moment": "^2.24.0"
   }
 }

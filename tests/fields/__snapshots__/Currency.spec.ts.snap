@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Model Currency should create instance 1`] = `"{\\"numeral\\":{\\"_input\\":100,\\"_value\\":100},\\"field\\":{\\"displayName\\":\\"测试\\"},\\"decimals\\":2,\\"isPercent\\":false}"`;
