@@ -1,13 +1,23 @@
-import Sinon from 'sinon'
-import { renderHook, act } from 'react-hooks-testing-library'
+import { renderHook } from 'react-hooks-testing-library'
+import MockAdapter from 'axios-mock-adapter'
 
+import axios from '../../src/request/axios'
 import { useQuery } from '../../src/hooks'
 
 jest.useFakeTimers()
 
+const mock = new MockAdapter(axios)
+const API_TEST = 'http://test.com'
+const response = 'test'
+
+mock.onGet(API_TEST).reply(200, response)
+
 describe('Component Query', () => {
   it('should have initialData', () => {
     const params = {
+      query: {
+        url: 'xx',
+      },
       initialData: [],
       skip: true,
     }
@@ -17,75 +27,27 @@ describe('Component Query', () => {
     expect(result.current.data).toEqual([])
   })
 
-  it('should fetch data even if variable is empty', () => {
-    const fetch = Sinon.spy()
+  it('should fetch data even if variable is empty', callback => {
     const params = {
-      query: fetch,
+      query: {
+        url: API_TEST,
+      },
       skip: false,
     }
 
-    act(() => {
-      renderHook(() => useQuery(params))
+    const { result } = renderHook(() => useQuery(params))
+
+    process.nextTick(() => {
+      expect(result.current.data).toBe('test')
+      callback()
     })
-
-    expect(fetch.calledOnce).toBeTruthy()
-  })
-
-  it('should not fetch data when skip is true', () => {
-    const fetch = Sinon.spy()
-    const params = {
-      query: fetch,
-      skip: true,
-    }
-
-    renderHook(() => {
-      useQuery(params)
-    })
-
-    expect(fetch.calledOnce).toBeFalsy()
-  })
-
-  it('should fetch data when variable change', () => {
-    const fetch = Sinon.spy()
-    let variable = {}
-    const { rerender } = renderHook(() => {
-      useQuery({
-        query: fetch,
-        variable,
-      })
-    })
-
-    expect(fetch.calledOnce).toBeTruthy()
-
-    act(() => {
-      variable = { data: 1 }
-      rerender()
-    })
-
-    expect(fetch.calledTwice).toBeTruthy()
-  })
-
-  it('should`t fetch data when variable not change', () => {
-    const fetch = Sinon.spy()
-    const { rerender } = renderHook(() => {
-      useQuery({
-        query: fetch,
-      })
-    })
-
-    expect(fetch.calledOnce).toBeTruthy()
-
-    rerender({
-      query: fetch,
-    })
-
-    expect(fetch.calledOnce).toBeTruthy()
   })
 
   it('should change loading state when fetch', callback => {
-    const fetch = jest.fn().mockResolvedValue(42)
     const params = {
-      query: fetch,
+      query: {
+        url: API_TEST,
+      },
       skip: false,
     }
 
@@ -101,71 +63,89 @@ describe('Component Query', () => {
     })
   })
 
-  it('should change data when fetch', callback => {
-    const fetch = jest.fn().mockResolvedValue(42)
+  it('should not fetch data when skip is true', () => {
     const params = {
-      query: fetch,
-      skip: false,
+      query: {
+        url: API_TEST,
+      },
+      skip: true,
     }
 
-    const { result } = renderHook(() => {
-      return useQuery(params)
-    })
+    const { result } = renderHook(() => useQuery(params))
+
+    expect(result.current.loading).toBeFalsy()
+    expect(result.current.data).toBeUndefined()
+    expect(result.current.response).toBeUndefined()
+  })
+
+  it('should fetch data when variable change', async () => {
+    const { result, rerender, waitForNextUpdate } = renderHook(
+      props => useQuery(props),
+      {
+        initialProps: {
+          skip: true,
+          query: {
+            url: API_TEST,
+          },
+          variable: {},
+        },
+      }
+    )
 
     expect(result.current.data).toBeUndefined()
 
-    process.nextTick(() => {
-      expect(result.current.data).toBe(42)
-
-      callback()
+    rerender({
+      skip: true,
+      query: {
+        url: API_TEST,
+      },
+      variable: {
+        data: 'test',
+      },
     })
+
+    await waitForNextUpdate()
+    expect(result.current.data).toBe(response)
+  })
+
+  it('should`t fetch data when variable not change', () => {
+    const { result, rerender } = renderHook(() =>
+      useQuery({
+        skip: true,
+        query: {
+          url: API_TEST,
+        },
+      })
+    )
+
+    expect(result.current.data).toBeUndefined()
+
+    rerender({
+      skip: true,
+      query: {
+        url: API_TEST,
+      },
+    })
+
+    expect(result.current.data).toBeUndefined()
   })
 
   it('should have refetch function', callback => {
-    const fetch = jest
-      .fn()
-      .mockResolvedValueOnce(42)
-      .mockResolvedValueOnce(2)
-    const params = {
-      query: fetch,
-      skip: false,
-    }
-
-    const { result } = renderHook(() => {
-      return useQuery(params)
-    })
+    const { result } = renderHook(() =>
+      useQuery({
+        skip: true,
+        query: {
+          url: API_TEST,
+        },
+      })
+    )
 
     expect(result.current.data).toBeUndefined()
 
-    process.nextTick(() => {
-      expect(result.current.data).toBe(42)
+    result.current.refetch().then(() => {
+      expect(result.current.data).toBe(response)
 
-      result.current.refetch().then(() => {
-        expect(result.current.data).toBe(2)
-
-        callback()
-      })
+      callback()
     })
-  })
-
-  it('should have startPolling function', () => {
-    const fetch = Sinon.spy()
-    const params = {
-      query: fetch,
-      skip: false,
-    }
-    const { result } = renderHook(() => {
-      return useQuery(params)
-    })
-
-    expect(fetch.callCount).toBe(1)
-
-    result.current.startPolling(1000)
-    jest.advanceTimersByTime(1000)
-    expect(fetch.callCount).toBe(2)
-
-    result.current.stopPolling()
-    jest.advanceTimersByTime(1000)
-    expect(fetch.callCount).toBe(2)
   })
 })

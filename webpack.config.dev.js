@@ -12,7 +12,7 @@ module.exports = merge(
     entry: [
       './demo/index.tsx' // the entry point of our app
     ],
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'inline-cheap-module-source-map',
     module: {
       rules: [
         {

@@ -4,8 +4,9 @@ module.exports = {
   ],
   // snapshotSerializers: ['enzyme-to-json/serializer'],
   collectCoverageFrom: [
-    '**/*.{js,jsx,ts,tsx}',
     '!**/node_modules/**',
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/**/*.d.ts"
   ],
   transform: {
     '^.+\\.(js|jsx|mjs)$': 'babel-jest',
