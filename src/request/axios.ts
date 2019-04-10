@@ -25,7 +25,7 @@ export const configure = (handles: {
   }
 }
 
-export const request = <T>(config: AxiosRequestConfig) => {
+export const request = async <T>(config: AxiosRequestConfig) => {
   return axios
     .request<T>(config)
     .then(handleResponse)
