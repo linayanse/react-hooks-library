@@ -1,8 +1,7 @@
 import { renderHook } from 'react-hooks-testing-library'
 import MockAdapter from 'axios-mock-adapter'
 
-import axios from '../../src/request/axios'
-import { useQuery } from '../../src/hooks'
+import { axios, useQuery } from '../../src'
 
 jest.useFakeTimers()
 
