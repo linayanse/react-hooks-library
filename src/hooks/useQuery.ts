@@ -108,13 +108,17 @@ export function useQuery<P>(props: IQueryProps<P>) {
       const queryResult = await query
 
       if (queryResult) {
-        const [isSuccess, queryResponse] = queryResult
+        const {
+          isSuccess,
+          response: queryResponse,
+          data: queryData,
+        } = queryResult
 
         if (isSuccess) {
-          setData(queryResponse.data)
+          setData(queryData)
 
           typeof props.onSuccess === 'function' &&
-            props.onSuccess(queryResponse.data, queryResponse)
+            props.onSuccess(queryData, queryResponse)
         } else {
           _reset()
         }

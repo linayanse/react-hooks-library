@@ -2,10 +2,18 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
 export type IHandleReponse<T> = (
   response: AxiosResponse<T>
-) => [boolean, AxiosResponse<T>]
+) => {
+  isSuccess: boolean
+  response: AxiosResponse<T>
+  data: T
+}
 export type IHandleError = (error: AxiosError) => void
 
-let handleResponse: IHandleReponse<any> = response => [true, response]
+let handleResponse: IHandleReponse<any> = response => ({
+  isSuccess: true,
+  response,
+  data: response.data,
+})
 let handleError: IHandleError = () => {}
 
 export const defaultsConfig: AxiosRequestConfig = {

@@ -2,11 +2,17 @@ import React, { useState } from 'react'
 
 import { useQuery, configure } from '../src'
 
-configure({
+export interface ICommonResponse {
+  code: number
+  data: any
+  message?: string
+}
+
+configure<ICommonResponse>({
   handleResponse: response => {
     console.log(response)
 
-    return [true, response]
+    return { isSuccess: true, response, data: response.data }
   },
   handleError: error => {
     console.log(error)
