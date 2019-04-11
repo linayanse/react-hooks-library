@@ -32,4 +32,4 @@ export const request = async <T>(config: AxiosRequestConfig) => {
     .catch(handleError)
 }
 
-export default axios
+export { axios }

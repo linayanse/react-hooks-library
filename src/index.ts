@@ -1,2 +1,2 @@
 export * from './hooks'
-export * from './request/axios'
+export * from './request'
