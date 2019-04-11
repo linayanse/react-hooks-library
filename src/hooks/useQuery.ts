@@ -15,14 +15,15 @@ export type IQuery = Pick<
   Exclude<keyof AxiosRequestConfig, 'params' | 'data' | 'cancelToken'>
 >
 
-export interface IQueryProps<P> {
+export interface IQueryProps<P, T = object> {
   query: IQuery
   initialData?: P
-  variable?: object
+  variable?: T
   pollInterval?: number
   skip?: boolean
   autoQuery?: boolean
-  onSuccess?(result: P): void
+  decorateData?(data: P): P
+  onSuccess?(result: P, response: AxiosResponse<P>): void
   onFailure?(error: Error): void
 }
 
@@ -113,7 +114,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
           setData(queryResponse.data)
 
           typeof props.onSuccess === 'function' &&
-            props.onSuccess(queryResponse.data)
+            props.onSuccess(queryResponse.data, queryResponse)
         } else {
           _reset()
         }
