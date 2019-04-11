@@ -147,4 +147,21 @@ describe('Component Query', () => {
       callback()
     })
   })
+
+  it('should have cancel funciton', async () => {
+    const { result, waitForNextUpdate } = renderHook(props => useQuery(props), {
+      initialProps: {
+        query: {
+          url: API_TEST,
+        },
+      },
+    })
+
+    expect(result.current.data).toBeUndefined()
+
+    result.current.cancel()
+
+    await waitForNextUpdate()
+    expect(result.current.data).toBeUndefined()
+  })
 })

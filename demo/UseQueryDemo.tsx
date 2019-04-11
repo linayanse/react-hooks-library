@@ -36,6 +36,9 @@ export const UseQueryDemo: React.FunctionComponent = () => {
   const stopPolling = () => {
     query.stopPolling()
   }
+  const cancel = () => {
+    query.cancel()
+  }
 
   return (
     <>
@@ -77,6 +80,10 @@ export const UseQueryDemo: React.FunctionComponent = () => {
 
       <div>
         <button onClick={stopPolling}>stopPolling</button>
+      </div>
+
+      <div>
+        <button onClick={cancel}>cancel</button>
       </div>
     </>
   )

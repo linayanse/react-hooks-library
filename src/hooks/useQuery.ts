@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { isEqual, merge } from 'lodash'
 
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  CancelTokenSource,
+} from 'axios'
 import { request } from '../request/axios'
 
 import { usePrevious } from './usePrevious'
@@ -24,7 +28,8 @@ export interface IQueryProps<P> {
 
 async function createRequest<P>(
   query: IQuery,
-  variable: IQueryProps<P>['variable']
+  variable: IQueryProps<P>['variable'],
+  cancelTokenSource: CancelTokenSource
 ) {
   if (
     query.method === 'PUT' ||
@@ -34,11 +39,13 @@ async function createRequest<P>(
     return request<P>({
       ...query,
       data: variable,
+      cancelToken: cancelTokenSource.token,
     })
   } else {
     return request<P>({
       ...query,
       params: variable,
+      cancelToken: cancelTokenSource.token,
     })
   }
 }
@@ -62,9 +69,10 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState(false)
   const [intervalIndex, setIntervalIndex] = useState<number>()
-  const intervalIndexRef = useRef(intervalIndex)
   const [isCalled, setIsCalled] = useState(false)
   const prevVariable = usePrevious(mergedProps.variable)
+  const intervalIndexRef = useRef(intervalIndex)
+  const cancelTokenSourceRef = useRef<CancelTokenSource>()
 
   const _reset = () => {
     setData(mergedProps.initialData)
@@ -87,7 +95,13 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const _queryTransaction = async (variable = mergedProps.variable) => {
     setLoading(true)
 
-    const query = createRequest<P>(mergedProps.query, variable)
+    cancelTokenSourceRef.current = axios.CancelToken.source()
+
+    const query = createRequest<P>(
+      mergedProps.query,
+      variable,
+      cancelTokenSourceRef.current
+    )
 
     try {
       const queryResult = await query
@@ -115,6 +129,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
       typeof props.onFailure === 'function' && props.onFailure(error)
     } finally {
       setLoading(false)
+      cancelTokenSourceRef.current = undefined
     }
 
     return query
@@ -137,6 +152,11 @@ export function useQuery<P>(props: IQueryProps<P>) {
       setIntervalIndex(undefined)
     }
   }
+  const cancel = () => {
+    if (cancelTokenSourceRef.current) {
+      cancelTokenSourceRef.current.cancel()
+    }
+  }
 
   useEffect(() => {
     if (_isShouldQuery()) {
@@ -156,6 +176,7 @@ export function useQuery<P>(props: IQueryProps<P>) {
     reset: _reset,
     loading,
     error,
+    cancel,
     refetch,
     startPolling,
     stopPolling,
