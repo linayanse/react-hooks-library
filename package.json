@@ -1,6 +1,6 @@
 {
   "name": "react-hooks-library",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "license": "MIT",
   "scripts": {
     "test": "jest --env=jsdom --coverage",
