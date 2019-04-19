@@ -1,10 +1,10 @@
 import { renderHook } from 'react-hooks-testing-library'
 import MockAdapter from 'axios-mock-adapter'
 
-import { axiosRequest, useQuery } from '../../src'
+import { axios, axiosRequest, useQuery } from '../../src'
 
 const request = axiosRequest({
-  handleSuccess: res => res.data,
+  handleResponse: res => res.data,
   catchErrors: error => {
     console.log(error)
   },
@@ -12,7 +12,7 @@ const request = axiosRequest({
 
 jest.useFakeTimers()
 
-const mock = new MockAdapter(request.axios)
+const mock = new MockAdapter(axios)
 const API_TEST = 'http://test.com'
 const response = 'test'
 

@@ -1,15 +1,15 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export interface IAaxiosHandles<Response> {
-  handleSuccess?<Data>(res: AxiosResponse<Response>): Data | Response
+  handleResponse?<Data>(res: AxiosResponse<Response>): Data | Response
   catchErrors?(err: Error): void
 }
 
 export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
   // 响应处理函数
   function handleRes<Data>(response: AxiosResponse<IResponse>) {
-    return handles.handleSuccess
-      ? handles.handleSuccess<Data>(response)
+    return handles.handleResponse
+      ? handles.handleResponse<Data>(response)
       : response.data
   }
 
@@ -33,7 +33,6 @@ export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
   }
 
   return {
-    axios,
     request,
     get: request('GET'),
     post: request('POST'),
@@ -42,3 +41,5 @@ export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
     delete: request('DELETE'),
   }
 }
+
+export { axios }
