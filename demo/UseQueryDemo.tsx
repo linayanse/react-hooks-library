@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
-import { useQuery, configure } from '../src'
+import { useQuery } from '../src'
+import { request } from './request'
 
 export interface ICommonResponse {
   code: number
@@ -8,27 +9,16 @@ export interface ICommonResponse {
   message?: string
 }
 
-configure<ICommonResponse>({
-  handleResponse: response => {
-    console.log(response)
-
-    return { isSuccess: true, response, data: response.data }
-  },
-  handleError: error => {
-    console.log(error)
-  },
-})
-
 import './index.scss'
 
 export const UseQueryDemo: React.FunctionComponent = () => {
   const [variable, setVariable] = useState({})
-  const query = useQuery({
+  const query = useQuery<[]>({
     initialData: [],
     variable,
-    query: {
+    query: request.get({
       url: 'https://jsonplaceholder.typicode.com/todos',
-    },
+    }),
   })
 
   const update = () => {

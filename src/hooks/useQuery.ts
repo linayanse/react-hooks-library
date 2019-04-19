@@ -1,54 +1,20 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { isEqual, merge } from 'lodash'
 
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  CancelTokenSource,
-} from 'axios'
-import { request } from '../request/axios'
+import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
 
 import { usePrevious } from './usePrevious'
 
-export type IQuery = Pick<
-  AxiosRequestConfig,
-  Exclude<keyof AxiosRequestConfig, 'params' | 'data' | 'cancelToken'>
->
-
 export interface IQueryProps<P, T = object> {
-  query: IQuery
   initialData?: P
   variable?: T
   pollInterval?: number
   skip?: boolean
   autoQuery?: boolean
-  decorateData?(data: P): P
-  onSuccess?(result: P, response: AxiosResponse<P>): void
+  config?: AxiosRequestConfig
+  query(config: AxiosRequestConfig): Promise<void | P>
+  onSuccess?(result: P): void
   onFailure?(error: Error): void
-}
-
-async function createRequest<P>(
-  query: IQuery,
-  variable: IQueryProps<P>['variable'],
-  cancelTokenSource: CancelTokenSource
-) {
-  if (
-    query.method === 'PUT' ||
-    query.method === 'POST' ||
-    query.method === 'PATCH'
-  ) {
-    return request<P>({
-      ...query,
-      data: variable,
-      cancelToken: cancelTokenSource.token,
-    })
-  } else {
-    return request<P>({
-      ...query,
-      params: variable,
-      cancelToken: cancelTokenSource.token,
-    })
-  }
 }
 
 export function useQuery<P>(props: IQueryProps<P>) {
@@ -66,7 +32,6 @@ export function useQuery<P>(props: IQueryProps<P>) {
   const [data, setData] = useState<IQueryProps<P>['initialData']>(
     props.initialData
   )
-  const [response, setResponse] = useState<AxiosResponse<P>>()
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState(false)
   const [intervalIndex, setIntervalIndex] = useState<number>()
@@ -77,7 +42,6 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
   const _reset = () => {
     setData(mergedProps.initialData)
-    setResponse(undefined)
   }
   const _isShouldQuery = () => {
     // the first time
@@ -98,32 +62,19 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
     cancelTokenSourceRef.current = axios.CancelToken.source()
 
-    const query = createRequest<P>(
-      mergedProps.query,
-      variable,
-      cancelTokenSourceRef.current
-    )
+    const query = mergedProps.query({
+      ...mergedProps.config,
+      params: variable,
+      cancelToken: cancelTokenSourceRef.current.token,
+    })
 
     try {
       const queryResult = await query
 
       if (queryResult) {
-        const {
-          isSuccess,
-          response: queryResponse,
-          data: queryData,
-        } = queryResult
+        setData(queryResult)
 
-        if (isSuccess) {
-          setData(queryData)
-
-          typeof props.onSuccess === 'function' &&
-            props.onSuccess(queryData, queryResponse)
-        } else {
-          _reset()
-        }
-
-        setResponse(queryResponse)
+        typeof props.onSuccess === 'function' && props.onSuccess(queryResult)
       } else {
         _reset()
       }
@@ -177,7 +128,6 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
   return {
     data,
-    response,
     reset: _reset,
     loading,
     error,
