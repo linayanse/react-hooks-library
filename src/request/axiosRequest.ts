@@ -1,25 +1,33 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
 export interface IAaxiosHandles<Response> {
-  handleResponse?<Data>(res: AxiosResponse<Response>): Data | Response
-  catchErrors?(err: Error): void
+  handleResponse?<Data>(
+    res: AxiosResponse<Response>,
+    ...rest: any[]
+  ): Data | Response
+  catchErrors?(err: AxiosError): void
 }
 
 export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
-  // 响应处理函数
-  function handleRes<Data>(response: AxiosResponse<IResponse>) {
+  function handleResponse<Data>(
+    response: AxiosResponse<IResponse>,
+    ...rest: any[]
+  ) {
     return handles.handleResponse
-      ? handles.handleResponse<Data>(response)
+      ? handles.handleResponse.apply<
+          undefined,
+          [AxiosResponse<IResponse>, ...any[]],
+          Data | IResponse
+        >(undefined, [response, ...rest])
       : response.data
   }
 
-  // 异常处理函数
-  const catchErrors = (error: Error) => {
+  const catchErrors = (error: AxiosError) => {
     handles.catchErrors && handles.catchErrors(error)
   }
 
   function request(method: string) {
-    return (userConfig: AxiosRequestConfig) => async (
+    return (userConfig: AxiosRequestConfig, ...rest: any[]) => async (
       config: AxiosRequestConfig
     ) =>
       axios
@@ -28,7 +36,7 @@ export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
           ...config,
           method,
         })
-        .then(res => handleRes(res))
+        .then(response => handleResponse.apply(undefined, [response, ...rest]))
         .catch(catchErrors)
   }
 
