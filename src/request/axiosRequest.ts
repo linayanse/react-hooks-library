@@ -1,23 +1,17 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
-export interface IAaxiosHandles<Response> {
-  handleResponse?<Data>(
-    res: AxiosResponse<Response>,
-    ...rest: any[]
-  ): Data | Response
+export interface IAaxiosHandles {
+  handleResponse?<Data>(res: AxiosResponse<Data>, ...rest: any[]): Data
   catchErrors?(err: AxiosError): void
 }
 
-export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
-  function handleResponse<Data>(
-    response: AxiosResponse<IResponse>,
-    ...rest: any[]
-  ) {
+export function axiosRequest(handles: IAaxiosHandles) {
+  function handleResponse<Data>(response: AxiosResponse<Data>, ...rest: any[]) {
     return handles.handleResponse
       ? handles.handleResponse.apply<
           undefined,
-          [AxiosResponse<IResponse>, ...any[]],
-          Data | IResponse
+          [AxiosResponse<Data>, ...any[]],
+          Data
         >(undefined, [response, ...rest])
       : response.data
   }
@@ -27,11 +21,11 @@ export function axiosRequest<IResponse>(handles: IAaxiosHandles<IResponse>) {
   }
 
   function request(method: string) {
-    return (userConfig: AxiosRequestConfig, ...rest: any[]) => async (
+    return (userConfig: AxiosRequestConfig, ...rest: any[]) => async <Data>(
       config: AxiosRequestConfig
     ) =>
       axios
-        .request<IResponse>({
+        .request<Data>({
           ...userConfig,
           ...config,
           method,
