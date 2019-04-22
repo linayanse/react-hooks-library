@@ -1,18 +1,27 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
-export interface IAaxiosHandles {
-  handleResponse?<Data>(res: AxiosResponse<Data>, ...rest: any[]): Data
+export type IHandleResponse<P, Data = P> = (
+  res: AxiosResponse<Data>,
+  ...rest: any[]
+) => Data
+
+export interface IAaxiosHandles<ResponseData> {
+  handleResponse: IHandleResponse<ResponseData>
   catchErrors?(err: AxiosError): void
 }
 
-export function axiosRequest(handles: IAaxiosHandles) {
+export function axiosRequest<ResponseData>(
+  handles: IAaxiosHandles<ResponseData>
+) {
   function handleResponse<Data>(response: AxiosResponse<Data>, ...rest: any[]) {
     return handles.handleResponse
-      ? handles.handleResponse.apply<
-          undefined,
-          [AxiosResponse<Data>, ...any[]],
+      ? ((handles.handleResponse as unknown) as IHandleResponse<
+          ResponseData,
           Data
-        >(undefined, [response, ...rest])
+        >).apply<undefined, [AxiosResponse<Data>, ...any[]], Data>(undefined, [
+          response,
+          ...rest,
+        ])
       : response.data
   }
 
@@ -21,7 +30,7 @@ export function axiosRequest(handles: IAaxiosHandles) {
   }
 
   function request(method: string) {
-    return (userConfig: AxiosRequestConfig, ...rest: any[]) => async <Data>(
+    return <Data>(userConfig: AxiosRequestConfig, ...rest: any[]) => async (
       config: AxiosRequestConfig
     ) =>
       axios
@@ -30,7 +39,13 @@ export function axiosRequest(handles: IAaxiosHandles) {
           ...config,
           method,
         })
-        .then(response => handleResponse.apply(undefined, [response, ...rest]))
+        .then(response =>
+          handleResponse.apply<
+            undefined,
+            [AxiosResponse<Data>, ...any[]],
+            Data
+          >(undefined, [response, ...rest])
+        )
         .catch(catchErrors)
   }
 

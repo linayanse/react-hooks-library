@@ -1,11 +1,10 @@
-import { axiosRequest, axios } from '../src/request'
+import { axiosRequest } from '../src/request'
 
-// tslint:disable-next-line: export-name
-export const request = axiosRequest<[]>({
-  handleResponse: res => {
-    return res.data
+export const request = axiosRequest({
+  handleResponse: response => {
+    return response.data
   },
-  catchErrors: err => {
-    throw err
+  catchErrors: error => {
+    throw error
   },
 })
