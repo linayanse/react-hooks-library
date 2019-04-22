@@ -10,6 +10,21 @@ export interface IAaxiosHandles<ResponseData> {
   catchErrors?(err: AxiosError): void
 }
 
+function variableToParams(
+  method: string,
+  variable: object
+): AxiosRequestConfig {
+  if (method === 'PUT' || method === 'POST' || method === 'PATCH') {
+    return {
+      data: variable,
+    }
+  } else {
+    return {
+      params: variable,
+    }
+  }
+}
+
 export function axiosRequest<ResponseData>(
   handles: IAaxiosHandles<ResponseData>
 ) {
@@ -31,12 +46,14 @@ export function axiosRequest<ResponseData>(
 
   function request(method: string) {
     return <Data>(userConfig: AxiosRequestConfig, ...rest: any[]) => async (
-      config: AxiosRequestConfig
+      config: AxiosRequestConfig,
+      variable: object
     ) =>
       axios
         .request<Data>({
           ...userConfig,
           ...config,
+          ...variableToParams(method, variable),
           method,
         })
         .then(response =>

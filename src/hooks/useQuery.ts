@@ -11,7 +11,7 @@ export interface IQueryProps<P, T = object> {
   pollInterval?: number
   skip?: boolean
   autoQuery?: boolean
-  query(config: AxiosRequestConfig): Promise<void | P>
+  query(config: AxiosRequestConfig, variable?: T): Promise<void | P>
   onSuccess?(result: P): void
   onFailure?(error: Error): void
 }
@@ -61,10 +61,12 @@ export function useQuery<P>(props: IQueryProps<P>) {
 
     cancelTokenSourceRef.current = axios.CancelToken.source()
 
-    const query = mergedProps.query({
-      params: variable,
-      cancelToken: cancelTokenSourceRef.current.token,
-    })
+    const query = mergedProps.query(
+      {
+        cancelToken: cancelTokenSourceRef.current.token,
+      },
+      variable
+    )
 
     try {
       const queryResult = await query
