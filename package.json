@@ -71,7 +71,6 @@
   "peerDependencies": {
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
-    "moment": "^2.24.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
   },
@@ -85,7 +84,6 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "axios": "^0.18.0",
-    "moment": "^2.24.0"
+    "axios": "^0.18.0"
   }
 }
