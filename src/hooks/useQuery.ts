@@ -120,6 +120,8 @@ export function useQuery<P>(props: IQueryProps<P>) {
     }
 
     setIsCalled(true)
+
+    return cancel
   }, [mergedProps.variable])
 
   useEffect(() => {
