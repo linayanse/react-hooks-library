@@ -13,10 +13,12 @@ export const UseQueryDemo: React.FunctionComponent<{
       a: '1',
     },
     variable,
-    query: () =>
-      fetch('https://jsonplaceholder.typicode.com/todos/1').then<object>(
-        response => response.json()
-      ),
+    query: (v: object) =>
+      fetch(
+        `https://jsonplaceholder.typicode.com/todos/1?variable=${JSON.stringify(
+          v
+        )}`
+      ).then<object>(response => response.json()),
   })
 
   const update = () => {
@@ -25,11 +27,19 @@ export const UseQueryDemo: React.FunctionComponent<{
     })
   }
 
+  const polling = () => {
+    query.startPolling(1000)
+  }
+
+  const stopPolling = () => {
+    query.stopPolling()
+  }
+
   return (
     <>
-      <div>
-        {JSON.stringify(toggle)}: {JSON.stringify(query.data)}
-      </div>
+      <div>数据：{JSON.stringify(query.data)}</div>
+
+      <div>参数: {JSON.stringify(variable)}</div>
 
       <div>
         <button onClick={query.refetch}>fetch</button>
@@ -37,6 +47,14 @@ export const UseQueryDemo: React.FunctionComponent<{
 
       <div>
         <button onClick={update}>updateVariable</button>
+      </div>
+
+      <div>
+        <button onClick={polling}>polling</button>
+      </div>
+
+      <div>
+        <button onClick={stopPolling}>stopPolling</button>
       </div>
     </>
   )
