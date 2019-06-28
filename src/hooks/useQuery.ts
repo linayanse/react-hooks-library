@@ -69,7 +69,6 @@ export function useQuery<P>(props: IQueryProps<P>) {
           _reset()
         }
 
-        setLoading(false)
         typeof props.onSuccess === 'function' && props.onSuccess(response)
 
         return response
@@ -77,6 +76,8 @@ export function useQuery<P>(props: IQueryProps<P>) {
         setError(error)
 
         typeof props.onFailure === 'function' && props.onFailure(error)
+      } finally {
+        setLoading(false)
       }
     }
 
